@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-lg-12" id="mainview">
+        <h1 class="page-header">管理员添加</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <form role="form" style="width:400px;">
+        <div class="form-group">
+          <label for="e_no">管理员编号</label>
+          <input type="text" class="form-control" id="e_no" placeholder="管理员编号">
+        </div>
+        <div class="form-group">
+          <label for="e_name">管理员姓名</label>
+          <input type="text" class="form-control" id="e_name" placeholder="员工姓名">
+        </div>      
+        <div class="form-group">
+          <label for="e_bornplace">所属部门</label>
+          <select class="form-control" id="e_bornplace">
+            <option>技术部</option>
+            <option>后勤部</option>
+            <option>人事部</option>
+            <option>经理部</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>管理状态</label>
+          <div class="control-label">
+            <label class="radio-inline">
+              <input type="radio" name="e_status" value="m"> 有效
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="e_status" value="m"> 无效
+            </label>           
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="e_bank">登陆密码</label>
+          <input type="password" class="form-control" id="e_bank" placeholder="">
+        </div>
+        <button type="submit" class="btn btn-default">添加员工</button>
+      </form>
+    </div>
+</div>

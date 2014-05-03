@@ -1,0 +1,96 @@
+body {
+    padding-top: 50px;
+}
+.main_bg{
+    background: url(/images/w7.jpg);
+}
+.login_area{
+    width: 430px;
+    margin: 15px auto;
+    padding: 20px;
+    border: 1px solid #555;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+   -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+      -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+           box-shadow:0 0 20px rgba(0,0,0,0.8);
+    border: solid #ccc 1px;
+    background: #fafafa;
+}
+
+
+.login_header{
+    border-bottom: 1px solid #e8e8e8;
+    padding:3px;
+    font-size: 18px;
+}
+
+
+#wrapper {
+    width: 100%;
+}
+.navbar-header{
+    float:left;
+}
+.navbar-right {
+float: right!important;
+}
+.navbar-top-links li:last-child {
+    margin-right: 15px;
+}
+.navbar-top-links li {
+    display: inline-block;
+}
+.navbar-top-links li a {
+    padding: 15px;
+    min-height: 50px;
+}
+.navbar-top-links .dropdown-user {
+    right: 0;
+    left: auto;
+}
+.navbar-top-links .dropdown-menu li {
+    display: block;
+}
+.navbar-top-links li {
+    display: inline-block;
+}
+.navbar-top-links .dropdown-menu li a {
+    padding: 3px 20px;
+    min-height: 0;
+}
+.navbar-static-side {
+    z-index: 1;
+    position: absolute;
+    width: 250px;
+    margin-top: 51px;
+}
+.navbar-static-side ul li {
+    border-bottom: 1px solid #e7e7e7;
+}
+.nav-second-level li, .nav-third-level li {
+    border-bottom: none !important;
+}
+.arrow {
+    float: right;
+}
+.nav-second-level li a {
+    padding-left: 37px;
+}
+#page-wrapper {
+    position: inherit;
+    margin: 0 0 0 250px;
+    padding: 0 30px;
+    min-height: 1300px;
+    border-left: 1px solid #e7e7e7;
+}
+.nav-tabs>li.active a{
+    background: #D9D9D9;
+}
+.nav-tabs>li.active a:hover{
+    background: #ddd !important;
+}
+#jiben table th{
+    background: #ccc;
+}

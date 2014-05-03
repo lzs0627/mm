@@ -1,0 +1,132 @@
+<div class="row">
+    <div class="col-lg-12" id="mainview">
+        <h1 class="page-header">员工添加</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <form role="form" style="width:400px;">
+        <div class="form-group">
+          <label for="e_no">员工编号</label>
+          <input type="text" class="form-control" id="e_no" placeholder="员工编号">
+        </div>
+        <div class="form-group">
+          <label for="e_name">员工姓名</label>
+          <input type="text" class="form-control" id="e_name" placeholder="员工姓名">
+        </div>
+        <div class="form-group">
+          <label for="e_idcardno">身份证号</label>
+          <input type="text" class="form-control" id="e_idcardno" placeholder="身份证号">
+        </div>
+        <div class="form-group">
+          <label>性别</label>
+          <div class="control-label">
+            <label class="radio-inline">
+              <input type="radio" name="e_sex" value="m"> 男
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="e_sex" value="f"> 女
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="e_ethnic">民族</label>
+          <input type="text" class="form-control" id="e_ethinc" placeholder="民族">
+        </div>
+        <div class="form-group">
+          <label for="e_birthday">出生年月</label>
+          <input type="text" class="form-control" id="e_birthday" placeholder="1970/3/3">
+        </div>
+        <div class="form-group">
+          <label id="e_edu">文化成度</label>
+          <div class="control-label">
+	       <select class="form-control" id="e_edu">
+		    <option>文盲</option>
+		    <option>小学</option>
+		    <option>中学</option>
+		    <option>大学</option>
+		    <option>研究生</option>
+		    <option>博士</option>
+		</select>           
+          </div>
+        </div>
+        <div class="form-group">
+          <label>婚姻状况</label>
+          <div class="control-label">
+            <label class="radio-inline">
+              <input type="radio" name="e_marry" value="m"> 未婚
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="e_marry" value="f"> 已婚
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="e_bornplace">籍贯</label>
+          <select class="form-control" id="e_bornplace">
+            <option>辽宁</option>
+            <option>北京</option>
+            <option>吉林</option>
+            <option>广州</option>
+            <option>上海</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="e_bornplace">所属部门</label>
+          <select class="form-control" id="e_bornplace">
+            <option>技术部</option>
+            <option>后勤部</option>
+            <option>人事部</option>
+            <option>经理部</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="e_tell">联系电话</label>
+          <input type="text" class="form-control" id="e_tell" placeholder="联系电话">
+        </div>
+        <div class="form-group">
+          <label for="e_enterdate">到岗日期</label>
+          <input type="text" class="form-control" id="e_enterdate" placeholder="到岗日期">
+        </div>
+        <div class="form-group">
+          <label for="e_leavedate">离岗日期</label>
+          <input type="text" class="form-control" id="e_leavedate" placeholder="离岗日期">
+        </div>
+        <div class="form-group">
+          <label for="e_officeplace">职务</label>
+          <select class="form-control" id="e_officeplace">
+            <option>普通员工</option>
+            <option>经理</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>在职状态</label>
+          <div class="control-label">
+            <label class="radio-inline">
+              <input type="radio" name="e_status" value="m"> 在职
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="e_status" value="m"> 修职
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="e_status" value="f"> 离职
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="e_bank">工资银行</label>
+          <input type="text" class="form-control" id="e_bank" placeholder="工资银行">
+        </div>
+        <div class="form-group">
+          <label for="e_bankcardno">工资卡账号</label>
+          <input type="text" class="form-control" id="e_bankcardno" placeholder="工资卡账号">
+        </div>
+        <div class="form-group">
+          <label for="e_moretext">备注</label>
+          <textarea class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-default">添加员工</button>
+      </form>
+    </div>
+</div>
