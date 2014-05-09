@@ -11,13 +11,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.arnx.jsonic.JSON;
+import java.util.*;
 import java.sql.*;
+import javax.servlet.http.HttpSession;
 /**
  *
  * @author lizhaoshi
  */
-@WebServlet(urlPatterns = {"/searchemploye"})
-public class searchemploye extends HttpServlet {
+@WebServlet(urlPatterns = {"/logincheck"})
+public class Logincheck extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,42 +34,50 @@ public class searchemploye extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet searchemploye</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet searchemploye at " + request.getContextPath() + "</h1>");
+        response.setContentType("application/json;charset=UTF-8");
+        
+        String ucode = request.getParameter("ucode");
+        String pw    = request.getParameter("pw");
+        
+        String jdbc = "";
+        
+        try{
+            // １．JDBC Driver の登録
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            // ２．データベースへの接続
+            Connection con = DriverManager.getConnection(
+		    "jdbc:mysql://localhost/mm_db", "root", "123456");
             
-            try{
-                Class.forName("com.mysql.jdbc.Driver");
-            } catch (ClassNotFoundException e) {
-                out.println("<P>JDBC ドライバロードエラー<BR>" + e.toString() + "</P>");
+            // ３．SQL ステートメント・オブジェクトの作成
+            Statement stmt = con.createStatement();
+            // ４．SQL ステートメントの発行
+            ResultSet rs = stmt.executeQuery("SELECT * from administrators where ucode='"+ucode+"' and upw='"+pw+"'");
+            // ５．結果の出力
+            
+            String name = "";
+            Map<String, Object> json = new HashMap<String, Object>();
+            
+            if (rs.next()) {
+                name = rs.getString("uname");
+                HttpSession session = request.getSession();
+                session.setAttribute("admin",name);
+                json.put("status","ok");
+            } else {
+                json.put("status","error");
             }
-            
-            try{
-                Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/mm_db?user=root&password=123456&useUnicode=true&characterEncoding=utf-8");
-                Statement st=conn.createStatement();
-                ResultSet res = st.executeQuery("select * from administrators");
 
-                while(res.next()){
-                    out.println("<tr>");
-                    out.println("<td>" + res.getString("id") + "</td>");
-                    out.println("<td>" + res.getString("ucode") + "</td>");
-                    out.println("</tr>");
-                }
-                st.close();
-                conn.close();
-            } catch(SQLException e){
-                out.println("<P>SQLException<BR>" + e.toString() + "</P>");
-            }
-            out.println("</body>");
-            out.println("</html>");
-        }
+            // ６．データベースのクローズ
+            rs.close();
+            stmt.close();
+            con.close();
+            
+            response.getOutputStream().write(JSON.encode(json).getBytes("UTF-8"));
+            
+        } catch (Exception e2) {
+			System.out.println(
+				"Exception: " + e2.getMessage());
+		}
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

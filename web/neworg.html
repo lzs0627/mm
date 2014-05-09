@@ -18,9 +18,47 @@
        
         <div class="form-group">
           <label for="e_moretext">部门职能描述</label>
-          <textarea class="form-control" rows="3"></textarea>
+          <textarea class="form-control" rows="3" id="e_moretext"></textarea>
         </div>
-        <button type="submit" class="btn btn-default">添加</button>
+        <button type="button" class="btn btn-default" id="submit_btn">添加</button>
+        <button type="Reset" class="btn btn-default" id="reset_btn">reset</button>
+
       </form>
     </div>
 </div>
+
+<script>
+    $(function(){
+        $("#submit_btn").click(function(){
+            
+            var dataset = {};
+            
+            dataset.dcode = $("#e_no").val();
+            dataset.dname = $("#e_name").val();
+            dataset.desc      = $("#e_moretext").val();
+            
+            for(var i in dataset){
+                if(dataset[i]==""){
+                    alert(i+" cannt empty.");return ;
+                }
+            }
+            
+            $.ajax({
+                    type: "POST",
+                    url: "/AddOrg",
+                    data: dataset,
+                    dataType:'json'
+                }).done(function(re){
+                    var r = $.extend({status:"error"},re);
+                    if(r.status == "ok"){
+                        alert("添加成功");
+                        $("#reset_btn").click();
+                    }else{
+                        
+                    }
+                }).fail(function( jqXHR, textStatus ){
+                    alert("系统错误。");
+                });
+        });
+    });
+</script>

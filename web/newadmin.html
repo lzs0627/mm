@@ -28,18 +28,58 @@
           <label>管理状态</label>
           <div class="control-label">
             <label class="radio-inline">
-              <input type="radio" name="e_status" value="m"> 有效
+              <input type="radio" name="e_status" value="1"> 有效
             </label>
             <label class="radio-inline">
-              <input type="radio" name="e_status" value="m"> 无效
+              <input type="radio" name="e_status" value="0"> 无效
             </label>           
           </div>
         </div>
         <div class="form-group">
           <label for="e_bank">登陆密码</label>
-          <input type="password" class="form-control" id="e_bank" placeholder="">
+          <input type="password" class="form-control" id="e_pw" placeholder="">
         </div>
-        <button type="submit" class="btn btn-default">添加员工</button>
+        <button type="button" class="btn btn-default" id="submit_btn">添加员工</button>
+        <button type="reset" class="btn btn-default" id="reset_btn">Reset</button>
       </form>
     </div>
 </div>
+
+<script>
+    $(function(){
+        $("#submit_btn").click(function(){
+            
+            var dataset = {};
+            
+            dataset.ucode = $("#e_no").val();
+            dataset.upw = $("#e_pw").val();
+            dataset.pcode      = $("#e_bornplace").val();
+            dataset.uname   = $("#e_name").val();
+            dataset.enable  = $('input[name="e_status"]:checked').val();
+            
+            
+            for(var i in dataset){
+                if(dataset[i]==""){
+                    alert(i+" cannt empty.");return ;
+                }
+            }
+            
+            $.ajax({
+                    type: "POST",
+                    url: "/AddAdmin",
+                    data: dataset,
+                    dataType:'json'
+                }).done(function(re){
+                    var r = $.extend({status:"error"},re);
+                    if(r.status == "ok"){
+                        alert("添加成功");
+                        $("#reset_btn").click();
+                    }else{
+                        
+                    }
+                }).fail(function( jqXHR, textStatus ){
+                    alert("系统错误。");
+                });
+        });
+    });
+</script>

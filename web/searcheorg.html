@@ -6,7 +6,7 @@
 		    <span class="input-group-addon">部门编号</span>
 		    <input type="text" class="form-control" id="e_no" placeholder="部门编号">
 		    <span class="input-group-btn">
-		      <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"/></button>
+		      <button class="btn btn-default" type="button" id="search_btn"><i class="glyphicon glyphicon-search"/></button>
 		    </span>
 		</div><!-- /input-group -->
 	    </div>
@@ -22,10 +22,6 @@
 	    <ul class="pagination">
 		<li class="disabled"><a href="#">«</a></li>
 		<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-		<li><a href="#">2</a></li>
-		<li><a href="#">3</a></li>
-		<li><a href="#">4</a></li>
-		<li><a href="#">5</a></li>
 		<li><a href="#">»</a></li>
 	     </ul>
 	    <div class="list">
@@ -36,19 +32,8 @@
 					<th>部门名称</th>			
 				</tr>
 		    </thead>
-		    <tbody>
-		      <tr>
-				<td><a href="#" data-role="loader" data-target="orginfo.html"><i class="glyphicon glyphicon-share-alt" />&nbsp;&nbsp;  001</a></td>
-				<td>技术部</td>				
-		      </tr>
-		      <tr>
-				<td><a href="#" data-role="loader" data-target="orginfo.html"><i class="glyphicon glyphicon-share-alt" />&nbsp;&nbsp;  002</a></td>
-				<td>后勤部</td>				
-		      </tr>
-		      <tr>
-				<td><a href="#" data-role="loader" data-target="orginfo.html"><i class="glyphicon glyphicon-share-alt" />&nbsp;&nbsp;  003</a></td>
-				<td>人事部</td>
-		      </tr>
+		    <tbody id="table_list">
+		      
 		    </tbody>
 		  </table>
 	    </div>
@@ -56,12 +41,35 @@
 	    <ul class="pagination">
 		<li class="disabled"><a href="#">«</a></li>
 		<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-		<li><a href="#">2</a></li>
-		<li><a href="#">3</a></li>
-		<li><a href="#">4</a></li>
-		<li><a href="#">5</a></li>
 		<li><a href="#">»</a></li>
 	     </ul>
 	</div>
     </div>
 </div>
+<script>
+$(function(){
+    
+    $("#search_btn").click(function(){
+        var ecode = $("#e_no").val();
+        var data = {};
+        if(ecode.length>0){
+            data.dcode = ecode;
+            
+        }
+        $.ajax({
+            type: "POST",
+            url: "/SearchOrg?d=1",
+            data: data,
+            dataType:'json',
+            cache:false
+        }).done(function(re){
+            $("#table_list").html(re.data);
+        }).fail(function( jqXHR, textStatus ){
+            alert("系统错误。");
+        });
+    });
+    
+    $("#search_btn").click();
+});    
+    
+</script>
