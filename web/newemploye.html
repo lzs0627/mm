@@ -23,10 +23,10 @@
           <label>性别</label>
           <div class="control-label">
             <label class="radio-inline">
-              <input type="radio" name="e_sex" value="m"> 男
+              <input type="radio" name="e_sex" value="1"> 男
             </label>
             <label class="radio-inline">
-              <input type="radio" name="e_sex" value="f"> 女
+              <input type="radio" name="e_sex" value="0"> 女
             </label>
           </div>
         </div>
@@ -39,15 +39,15 @@
           <input type="text" class="form-control" id="e_birthday" placeholder="1970/3/3">
         </div>
         <div class="form-group">
-          <label id="e_edu">文化成度</label>
+          <label for="e_edu">文化成度</label>
           <div class="control-label">
-	       <select class="form-control" id="e_edu">
-		    <option>文盲</option>
-		    <option>小学</option>
-		    <option>中学</option>
-		    <option>大学</option>
-		    <option>研究生</option>
-		    <option>博士</option>
+	       <select class="form-control" name="e_edu">
+                <option value="文盲">文盲</option>
+                <option value="小学">小学</option>
+                <option value="中学">中学</option>
+                <option value="大学">大学</option>
+                <option value="研究生">研究生</option>
+                <option value="博士">博士</option>
 		</select>           
           </div>
         </div>
@@ -55,30 +55,30 @@
           <label>婚姻状况</label>
           <div class="control-label">
             <label class="radio-inline">
-              <input type="radio" name="e_marry" value="m"> 未婚
+              <input type="radio" name="e_marry" value="未婚"> 未婚
             </label>
             <label class="radio-inline">
-              <input type="radio" name="e_marry" value="f"> 已婚
+              <input type="radio" name="e_marry" value="已婚"> 已婚
             </label>
           </div>
         </div>
         <div class="form-group">
           <label for="e_bornplace">籍贯</label>
           <select class="form-control" id="e_bornplace">
-            <option>辽宁</option>
-            <option>北京</option>
-            <option>吉林</option>
-            <option>广州</option>
-            <option>上海</option>
+                <option value="辽宁">辽宁</option>
+                <option value="北京">北京</option>
+                <option value="吉林">吉林</option>
+                <option value="广州">广州</option>
+                <option value="上海">上海</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="e_bornplace">所属部门</label>
-          <select class="form-control" id="e_bornplace">
-            <option>技术部</option>
-            <option>后勤部</option>
-            <option>人事部</option>
-            <option>经理部</option>
+          <label for="e_bumen">所属部门</label>
+          <select class="form-control" id="e_bumen">
+                <option value="技术部">技术部</option>
+                <option value="后勤部">后勤部</option>
+                <option value="人事部">人事部</option>
+                <option value="经理部">经理部</option>
           </select>
         </div>
         <div class="form-group">
@@ -96,21 +96,21 @@
         <div class="form-group">
           <label for="e_officeplace">职务</label>
           <select class="form-control" id="e_officeplace">
-            <option>普通员工</option>
-            <option>经理</option>
+            <option value="普通员工">普通员工</option>
+            <option value="经理">经理</option>
           </select>
         </div>
         <div class="form-group">
           <label>在职状态</label>
           <div class="control-label">
             <label class="radio-inline">
-              <input type="radio" name="e_status" value="m"> 在职
+              <input type="radio" name="e_status" value="在职"> 在职
             </label>
             <label class="radio-inline">
-              <input type="radio" name="e_status" value="m"> 修职
+              <input type="radio" name="e_status" value="修职"> 修职
             </label>
             <label class="radio-inline">
-              <input type="radio" name="e_status" value="f"> 离职
+              <input type="radio" name="e_status" value="离职"> 离职
             </label>
           </div>
         </div>
@@ -124,9 +124,61 @@
         </div>
         <div class="form-group">
           <label for="e_moretext">备注</label>
-          <textarea class="form-control" rows="3"></textarea>
+          <textarea class="form-control" rows="3" id="e_moretext"></textarea>
         </div>
-        <button type="submit" class="btn btn-default">添加员工</button>
+        <button type="button" class="btn btn-default" id="submit_btn">添加员工</button>
+        <button type="reset" class="btn btn-default" id="reset_btn">Reset</button>
       </form>
     </div>
 </div>
+
+<script>
+    $(function(){
+        $("#submit_btn").click(function(){
+            
+            var dataset = {};
+            
+            dataset.ecode = $("#e_no").val();
+            dataset.ename = $("#e_name").val();
+            dataset.uid     = $("#e_idcardno").val();
+            dataset.sex     = $('input[name="e_sex"]:checked').val();
+            dataset.ethnic  = $("#e_ethinc").val();
+            dataset.birthday= $("#e_birthday").val();
+            dataset.wenhua  = $("#e_edu").val();
+            dataset.hunyin  = $('input[name="e_marry"]:checked').val();
+            dataset.jiguan  = $("#e_bornplace").val();
+            dataset.bumen   = $("#e_bumen").val();
+            dataset.tell    = $("#e_tell").val();
+            dataset.workstart = $("#e_enterdate").val();
+            dataset.workleave = $("#e_leavedate").val();
+            dataset.zhiwu     = $("＃e_officeplace").val();
+            dataset.status    = $('input[name="e_status"]:checked').val();
+            dataset.bankname  = $("#e_bank").val();
+            dataset.bankno    = $("#e_bankcardno").val();
+            dataset.desc      = $("#e_moretext").val();
+            
+            for(var i in dataset){
+                if(dataset[i]==""){
+                    alert(i+" cannt empty.");return ;
+                }
+            }
+            
+            $.ajax({
+                type: "GET",
+                url: "/addemploye",
+                data: dataset,
+                dataType:'json'
+            }).done(function(re){
+                var r = $.extend({status:"error"},re);
+                if(r.status == "ok"){
+                    alert("添加成功");
+                    $("#reset_btn").click();
+                }else{
+
+                }
+            }).fail(function( jqXHR, textStatus ){
+                alert("系统错误。");
+            });
+        });
+    });
+</script>
