@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>人事管理システム</title>
+    <title>人事管理系统</title>
 
     <!-- Bootstrap -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
@@ -26,7 +26,7 @@
     <div id="wrapper">
 	<nav class="navbar navbar-default navbar-fixed-top" style="margin-bottom: 0">
 	    <div class="navbar-header">                
-		<a class="navbar-brand" href="#">人事管理システム</a>
+		<a class="navbar-brand" href="#">人事管理系统</a>
 	    </div>
 	    <ul class="nav navbar-top-links navbar-right">               
                 <!-- /.dropdown -->
@@ -79,9 +79,7 @@
                         <li>
                             <a href="#"><i class="glyphicon glyphicon-list-alt"></i> 系统管理<span class="glyphicon glyphicon-chevron-right arrow"></span></a>
                             <ul class="nav nav-second-level collapse">
-                                <li>
-                                    <a href="#">数据词典管理</a>
-                                </li>
+                                
                                 <li>
                                     <a href="#" data-role="loader" data-target="/newadmin.html">添加管理员</a>
                                 </li>

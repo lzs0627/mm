@@ -63,7 +63,7 @@ public class SearchOrg extends HttpServlet {
                 int count = 0;
                 while(rs.next()){
                     rebody +="<tr>";
-                    rebody +="<td><a href=\"#\" data-role=\"loader\" data-target=\"orginfo.jsp?dc="+rs.getString("dcode")+"\"><i class=\"glyphicon glyphicon-share-alt\" />&nbsp;&nbsp;  "+rs.getString("dcode")+"</a></td>";
+                    rebody +="<td><a href=\"#\" data-role=\"loader\" data-target=\"orginfo.html?dc="+rs.getString("dcode")+"\"><i class=\"glyphicon glyphicon-share-alt\" />&nbsp;&nbsp;  "+rs.getString("dcode")+"</a></td>";
                     rebody +="<td>"+rs.getString("dname")+"</td>";
                     rebody +="</tr>";
                     count ++;
