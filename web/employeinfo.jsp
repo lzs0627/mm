@@ -21,11 +21,15 @@ try{
     // ４．SQL ステートメントの発行
     ResultSet rs = null;
     rs = stmt.executeQuery("select * from employe where ecode='"+ecode+"'");
-                
-    // ５．結果の出力
+    ResultSet rs2 = null;
+       
     
     if(rs.next()){
         ename = rs.getString("ename");
+        //调动履历
+        stmt = con.createStatement();
+        rs2 = stmt.executeQuery("select * from histories where employe_id="+rs.getString("id"));
+
     }else{
         
     }
@@ -132,7 +136,7 @@ try{
 	<div class="tab-pane fade" id="dangan">
 		<div class="results" style="padding:15px 0px;">
 			<div class="panel panel-default">
-				<div class="panel-heading"><a href="#"><i class="glyphicon glyphicon-plus" /></a>履歴</div>
+				<div class="panel-heading"><a href="#" data-toggle="modal" data-target="#history_edit" id="add_history"><i class="glyphicon glyphicon-plus" /></a>履歴</div>
 				<table class="table table-striped table-bordered table-hover table-condensed">
 					<thead>
 					  <tr>
@@ -146,15 +150,19 @@ try{
 					  </tr>
 					</thead>
 					<tbody>
+                     <%while(rs2.next()){%>
 					  <tr>
-						<td><a href="#"><i class="glyphicon glyphicon-trash" /></a>&nbsp;&nbsp;<a href="#"><i class="glyphicon glyphicon-edit" /></a></td>
-						<td>00001</td>
-						<td>无</td>
-						<td>摆渡公司</td>
-						<td>中兴公司</td>
-						<td>2010/02/01</td>
-						<td>ddddd</td>
-					  </tr>				  
+                        <td>
+                            <a href="#" data-id="<%=rs2.getString("id")%>" class="h_del_btn"><i class="glyphicon glyphicon-trash" /></a>&nbsp;&nbsp;
+                            <a href="#" data-id="<%=rs2.getString("id")%>" class="h_edit_btn"><i class="glyphicon glyphicon-edit" /></a></td>
+						<td>00<%=rs2.getString("id")%></td>
+						<td class="zw"><%=rs2.getString("zhiwu")%></td>
+						<td class="ow"><%=rs2.getString("oworkplace")%></td>
+						<td class="nw"><%=rs2.getString("nworkplace")%></td>
+						<td class="ch"><%=rs2.getString("changeat")%></td>
+						<td class="yy"><%=rs2.getString("diaodongyuanyin")%></td>
+					  </tr>	
+                      <%}%>
 					</tbody>
 				  </table>
 			</div>
@@ -293,16 +301,49 @@ try{
      </div>
     </div>
 </div>
-<%
-    stmt.close();
-    con.close();
-                
-} catch (Exception e2) {
-    System.out.println("Exception: " + e2.getMessage());
-}
 
-%>
-
+<!-- 履歴 -->
+<div class="modal fade" id="history_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">添加履历[<%=rs.getString("ename")%>]</h4>
+      </div>
+      <div class="modal-body">
+          <form role="form">
+              <input name="eid" type="hidden" id="e_id" value="<%=rs.getString("id")%>" />
+              <input name="m" type="hidden" id="h_method" value="add" />
+              <input name="hid" type="hidden" id="h_id" value="0" />
+              <div class="form-group">
+                <label for="h_zhiwu">职务</label>
+                <input type="text" class="form-control" id="h_zhiwu" placeholder="职务">
+              </div>
+              <div class="form-group">
+                <label for="h_oworkplace">旧工作单位</label>
+                <input type="text" class="form-control" id="h_oworkplace" placeholder="旧工作单位">
+              </div>
+              <div class="form-group">
+                <label for="h_nworkplace">新工作单位</label>
+                <input type="text" class="form-control" id="h_nworkplace" placeholder="新工作单位">
+              </div>
+              <div class="form-group">
+                <label for="h_changeat">调动日期</label>
+                <input type="text" class="form-control" id="h_changeat" placeholder="调动日期">
+              </div>
+              <div class="form-group">
+                <label for="e_yuanyin">调动原因</label>
+                <textarea class="form-control" rows="3" id="h_yuanyin"></textarea>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-default" id="history_submit_btn">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
     $(function(){
         $("#submit_btn_e").click(function(){
@@ -350,5 +391,92 @@ try{
                 alert("系统错误。");
             });
         });
+        $("#add_history").click(function(){
+            $("#h_method").val("add");
+        });
+        $("#history_submit_btn").click(function(){
+            var dataset = {};
+            dataset.employe_id = $("#e_id").val();
+            dataset.id = $("#h_id").val();
+            dataset.zhiwu = $("#h_zhiwu").val();
+            dataset.method = $("#h_method").val();
+            dataset.nworkplace = $("#h_nworkplace").val();
+            dataset.oworkplace = $("#h_oworkplace").val();
+            dataset.changeat = $("#h_changeat").val();
+            dataset.yuanyin = $("#h_yuanyin").val();
+            for(var i in dataset){
+                if(dataset[i]==""){
+                    alert("不能为空");return ;
+                }
+            }
+            
+            $.ajax({
+                type: "POST",
+                url: "/UpdateHistory",
+                data: dataset,
+                dataType:'json'
+            }).done(function(re){
+                var r = $.extend({status:"error"},re);
+                if(r.status == "ok"){
+                    $('#history_edit').modal('hide');
+                    
+                }else{
+                    alert(r.msg);
+                }
+            }).fail(function( jqXHR, textStatus ){
+                alert("系统错误。");
+            });
+        });
+        
+        $(".h_edit_btn").click(function(){
+            var id = $(this).data('id');
+            $("#h_method").val("edit");
+            $('#history_edit').modal('show');
+            $("#h_id").val(id);
+            $("#h_zhiwu").val($(".zw",$(this).parents("tr")).text());
+            $("#h_oworkplace").val($(".ow",$(this).parents("tr")).text());
+            $("#h_nworkplace").val($(".nw",$(this).parents("tr")).text());
+            $("#h_changeat").val($(".ch",$(this).parents("tr")).text());
+            $("#h_yuanyin").val($(".yy",$(this).parents("tr")).text());
+            
+        });
+       
+        $(".h_del_btn").click(function(){
+            var id = $(this).data("id");
+            var $this = $(this);
+            if (confirm("确认删除么")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/UpdateHistory",
+                    data: {method:'delete',id:id},
+                    dataType:'json'
+                }).done(function(re){
+                    var r = $.extend({status:"error"},re);
+                    if(r.status == "ok"){
+                        $this.parents("tr").remove();
+
+                    }else{
+                        alert(r.msg);
+                    }
+                }).fail(function( jqXHR, textStatus ){
+                    alert("系统错误。");
+                });
+            }
+            
+            
+        });
     });
 </script>
+
+
+
+
+<%
+    stmt.close();
+    con.close();
+                
+} catch (Exception e2) {
+    System.out.println("Exception: " + e2.getMessage());
+}
+
+%>
