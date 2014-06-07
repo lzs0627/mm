@@ -18,7 +18,7 @@ import java.sql.*;
 import javax.servlet.http.HttpSession;
 /**
  *
- * @author lizhaoshi
+ * @author 毛畅
  */
 
 public class Searchemploye extends HttpServlet {

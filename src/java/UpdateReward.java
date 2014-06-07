@@ -5,10 +5,8 @@
  */
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,15 +15,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import net.arnx.jsonic.JSON;
 
 /**
  *
  * @author 毛畅
  */
-@WebServlet(urlPatterns = {"/addemploye"})
-public class addemploye extends HttpServlet {
+@WebServlet(urlPatterns = {"/UpdateReward"})
+public class UpdateReward extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,27 +35,19 @@ public class addemploye extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
         
-        String ecode = request.getParameter("ecode");
-        String ename    = request.getParameter("ename");
-        String uid    = request.getParameter("uid");
-        String sex    = request.getParameter("sex");
-        String ethnic    = request.getParameter("ethnic");
-        String birthday    = request.getParameter("birthday");
-        String wenhua    = request.getParameter("wenhua");
-        String hunyin    = request.getParameter("hunyin");
-        String jiguan    = request.getParameter("jiguan");
-        String bumen    = request.getParameter("bumen");
-        String tell    = request.getParameter("tell");
-        String workstart    = request.getParameter("workstart");
-        String workleave    = request.getParameter("workleave");
-        String zhiwu    = request.getParameter("zhiwu");
-        String status    = request.getParameter("status");
-        String bankname    = request.getParameter("bankname");
-        String bankno    = request.getParameter("bankno");
-        String desc    = request.getParameter("desc");
+        Map<String, Object> json = new HashMap<String, Object>();
+        
+        String method = request.getParameter("method");
+        String employe_id = request.getParameter("eid");
+        String id = request.getParameter("id");
+        String type = request.getParameter("type");
+        String enterat = request.getParameter("enterat");
+        String yuanyin = request.getParameter("yuanyin");
+        String other = request.getParameter("other");
         
         try{
             // １．JDBC Driver の登録
@@ -66,44 +55,51 @@ public class addemploye extends HttpServlet {
             // ２．データベースへの接続
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/mm_db?characterEncoding=utf-8", "root", "123456");
             // ３．SQL ステートメント・オブprepareStatementジェクトの作成
-            PreparedStatement stmt = con.prepareStatement(
-                    "insert into employe"
-                            + "(ecode,ename,uid,sex,ethnic,birthday,wenhua,hunyin,jiguan,bumen,tell,workstart,workleave,zhiwu,status,bankname,bankno,description,modified,created) "
-                            + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-            // ４．SQL ステートメントの発行
+            if (method.equals("add")) {
+                PreparedStatement stmt = con.prepareStatement(
+                        "insert into rewards "
+                                + "(employe_id,rtype,enterat,yuanyin,beizhu) "
+                                + "values(?,?,?,?,?)");
+                stmt.setInt(1, Integer.parseInt(employe_id));
+                stmt.setString(2, type);
+                stmt.setString(3,enterat);
+                stmt.setString(4,yuanyin);
+                stmt.setString(5,other);
+                stmt.execute();
+                json.put("status","ok");
+            } else if (method.equals("edit")) {
+                PreparedStatement stmt = con.prepareStatement(
+                    "update rewards set "
+                            + "rtype=?,"
+                            + "enterat=?,"
+                            + "yuanyin=?,"
+                            + "beizhu=?"
+                            + "where id=?");
+                stmt.setString(1, type);
+                stmt.setString(2, enterat);
+                stmt.setString(3, yuanyin);
+                stmt.setString(4,other);
+                stmt.setInt(5, Integer.parseInt(id));
+                stmt.execute();
+                json.put("status","ok");
+            } else if(method.equals("delete")){
+                PreparedStatement stmt = con.prepareStatement(
+                "delete from rewards where id=?");
+                
+                stmt.setInt(1, Integer.parseInt(id));
+                stmt.execute();
+                json.put("status","ok");
+            } else {
+                json.put("status","error");
+                json.put("msg", "unknow method : "+method);
+            }
             
-            stmt.setString(1, ecode);
-            stmt.setString(2, ename);
-            stmt.setString(3,uid);
-            stmt.setInt(4, Integer.parseInt(sex));
-            stmt.setString(5, ethnic);
-            stmt.setString(6, birthday);
-            stmt.setString(7, wenhua);
-            stmt.setString(8, hunyin);
-            stmt.setString(9, jiguan);
-            stmt.setString(10, bumen);
-            stmt.setString(11, tell);
-            stmt.setString(12, workstart);
-            stmt.setString(13,workleave);
-            stmt.setString(14,zhiwu);
-            stmt.setString(15, status);
-            stmt.setString(16,bankname);
-            stmt.setString(17, bankno);
-            stmt.setString(18,desc);
-            stmt.setString(19,"2014/12/12");
-            stmt.setString(20,"2014/12/12");
-            stmt.execute();
-            
-            Map<String, Object> json = new HashMap<String, Object>();
-            json.put("status","ok");
-            
-            response.getOutputStream().write(JSON.encode(json).getBytes("UTF-8"));
-            
-        } catch (Exception e2) {
-			System.out.println(
-				"Exception: " + e2.getMessage());
+        }catch (Exception e2) {
+            json.put("status","error");
+            json.put("msg", e2.getMessage());
 		}
         
+        response.getOutputStream().write(JSON.encode(json).getBytes("UTF-8"));
         
     }
 

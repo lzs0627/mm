@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.arnx.jsonic.JSON;
 /**
  *
- * @author lizhaoshi
+ * @author 毛畅
  */
 @WebServlet(urlPatterns = {"/UpdateHistory"})
 public class UpdateHistory extends HttpServlet {

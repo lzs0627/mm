@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author lizhaoshi
+ * @author 毛畅
  */
 public class Orginfo extends HttpServlet {
 

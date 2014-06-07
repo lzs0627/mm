@@ -18,7 +18,7 @@ import java.sql.*;
 import javax.servlet.http.HttpSession;
 /**
  *
- * @author lizhaoshi
+ * @author 毛畅
  */
 @WebServlet(urlPatterns = {"/logincheck"})
 public class Logincheck extends HttpServlet {
@@ -34,6 +34,37 @@ public class Logincheck extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        /**
+         * 
+            AdminController admin = new AdminController();
+
+            int comandType = request.getParameter("ctype");
+
+            switch (comandType) {
+                //添加新管理员
+                case 1:
+                    admin->readyToCreate();
+                    admin->setForm(request);
+
+                    if (admin->checkForm()) {
+                        if (admin->save()) {
+                            reply = "添加成功";
+                        } else {
+                            reply = "保存失败";
+                        }
+                    } else {
+                        reply = "管理员信息不正确";
+                    }        
+                    break;
+                //
+                default:
+                    reply = "输入错误";
+                    break;
+            } 
+         
+         */
+        
+        
         response.setContentType("application/json;charset=UTF-8");
         
         String ucode = request.getParameter("ucode");

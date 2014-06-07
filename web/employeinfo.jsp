@@ -22,14 +22,18 @@ try{
     ResultSet rs = null;
     rs = stmt.executeQuery("select * from employe where ecode='"+ecode+"'");
     ResultSet rs2 = null;
-       
-    
+    ResultSet rs_jiangfa = null;
+    ResultSet rs_wage = null;
     if(rs.next()){
         ename = rs.getString("ename");
         //调动履历
         stmt = con.createStatement();
         rs2 = stmt.executeQuery("select * from histories where employe_id="+rs.getString("id"));
-
+        //奖罚
+        stmt = con.createStatement();
+        rs_jiangfa = stmt.executeQuery("select * from rewards where employe_id="+rs.getString("id"));
+        stmt = con.createStatement();
+        rs_wage = stmt.executeQuery("select * from wages where  employe_id="+rs.getString("id"));
     }else{
         
     }
@@ -168,7 +172,7 @@ try{
 			</div>
 			
 			<div class="panel panel-default" style="margin-top:15px;">
-				<div class="panel-heading"><a href="#"><i class="glyphicon glyphicon-plus" /></a>奖励惩罚</div>
+				<div class="panel-heading"><a href="#" data-toggle="modal" data-target="#rewards_edit" id="add_reward"><i class="glyphicon glyphicon-plus" /></a>奖励惩罚</div>
 				<table class="table table-striped table-bordered table-hover table-condensed">
 					<thead>
 					  <tr>
@@ -180,14 +184,18 @@ try{
 					  </tr>
 					</thead>
 					<tbody>
-					  <tr>
-						<td><a href="#"><i class="glyphicon glyphicon-trash" /></a>&nbsp;&nbsp;<a href="#"><i class="glyphicon glyphicon-edit" /></a></td>
-						<td>奖励</td>
-						<td>2001/02/03</td>
-						<td>原因</td>
-						<td>备注</td>
-					  </tr>	
-									  
+                        <%while(rs_jiangfa.next()){%>
+                        <tr>
+                            <td>
+                                <a href="#" data-id="<%=rs_jiangfa.getString("id")%>" class="reward_del_btn"><i class="glyphicon glyphicon-trash" /></a>&nbsp;&nbsp;
+                                <a href="#" data-id="<%=rs_jiangfa.getString("id")%>" class="reward_edit_btn"><i class="glyphicon glyphicon-edit" /></a></td>
+                            <td class="type"><%=rs_jiangfa.getString("rtype")%></td>
+                            <td class="date"><%=rs_jiangfa.getString("enterat")%></td>
+                            <td class="yuanyin"><%=rs_jiangfa.getString("yuanyin")%></td>
+                            <td class="other"><%=rs_jiangfa.getString("beizhu")%></td>
+                        </tr>	
+                        <%}%>
+					  	  
 					</tbody>
 				  </table>
 			</div>
@@ -270,6 +278,12 @@ try{
 	    </div></div>
 	<div class="tab-pane fade" id="gongzi">
 		<div class="list" style="margin-top: 15px;">
+        <div class="panel-heading">
+            <a href="#" data-toggle="modal" data-target="#wage_edit" id="add_wage">
+                <i class="glyphicon glyphicon-plus" />
+            </a>
+            工资信息
+        </div>
 		<table class="table table-striped table-bordered table-hover table-condensed">
 		    <thead>
 		      <tr>
@@ -284,16 +298,21 @@ try{
 		      </tr>
 		    </thead>
 		    <tbody>
-		      <tr>
-			    <td><a href="#"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;&nbsp;<a href="#"><i class="glyphicon glyphicon-edit"></i></a></td>
-				<td>2014/04</td>
-				<td>4500</td>
-				<td>300</td>
-				<td>300</td>
-				<td>300</td>
-				<td>100</td>
-				<td>100</td>
-		      </tr>
+                <%while(rs_wage.next()){%>
+                    <tr>
+                        <td>
+                            <a href="#" data-id="<%=rs_wage.getString("id")%>" class="wage_del_btn"><i class="glyphicon glyphicon-trash" /></a>&nbsp;&nbsp;
+                            <a href="#" data-id="<%=rs_wage.getString("id")%>" class="wage_edit_btn"><i class="glyphicon glyphicon-edit" /></a></td>
+                        <td class="date"><%=rs_wage.getString("wdate")%></td>
+                        <td class="jiben"><%=rs_wage.getString("wjiben")%></td>
+                        <td class="ticheng"><%=rs_wage.getString("wticheng")%></td>
+                        <td class="jiangli"><%=rs_wage.getString("wjiangli")%></td>
+                        <td class="jiaban"><%=rs_wage.getString("wjiaban")%></td>
+                        <td class="other"><%=rs_wage.getString("wother")%></td>
+                        <td class="beizhu"><%=rs_wage.getString("beizhu")%></td>
+                    </tr>	
+                <%}%>
+		      
 		      
 		    </tbody>
 		  </table>
@@ -468,8 +487,262 @@ try{
     });
 </script>
 
+<!-- 奖罚 -->
+<div class="modal fade" id="rewards_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">添加[<%=rs.getString("ename")%>]的奖罚信息</h4>
+      </div>
+      <div class="modal-body">
+          <form role="form">
+              <input name="eid" type="hidden" id="reward_e_id" value="<%=rs.getString("id")%>" />
+              <input name="m" type="hidden" id="reward_method" value="" />
+              <input name="id" type="hidden" id="reward_id" value="0" />
+              <div class="form-group">
+                <label for="reward_type">奖罚类型</label>
+                <input type="text" class="form-control" id="reward_type" placeholder="奖励or惩罚">
+              </div>
+              <div class="form-group">
+                <label for="reward_date">奖惩时间</label>
+                <input type="text" class="form-control" id="reward_date" placeholder="奖惩时间">
+              </div>
+              <div class="form-group">
+                <label for="reward_yuanyin">奖惩原因</label>
+                <input type="text" class="form-control" id="reward_yuanyin" placeholder="奖惩原因">
+              </div>
+              <div class="form-group">
+                <label for="reward_other">备注</label>
+                <input type="text" class="form-control" id="reward_other" placeholder="备注">
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-default" id="reward_submit_btn">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+     $(function(){
+        $("#reward_submit_btn").click(function(){
+            
+            var dataset = {};
+            dataset.id    = $("#reward_id").val();
+            dataset.eid    = $("#reward_e_id").val();
+            dataset.method    = $("#reward_method").val();
+            dataset.type    = $("#reward_type").val();
+            dataset.enterat    = $("#reward_date").val();
+            dataset.yuanyin    = $("#reward_yuanyin").val();
+            dataset.other    = $("#reward_other").val();
+            
+            if (dataset.method === "") {
+                alert("操作错误");
+                return;
+            }
+            if (dataset.type == "") {
+                alert("信息填写不正确");return;
+            }
+            $.ajax({
+                type: "GET",
+                url: "/UpdateReward",
+                data: dataset,
+                dataType:'json'
+            }).done(function(re){
+                var r = $.extend({status:"error"},re);
+                if(r.status == "ok"){
+                    $('#reward_edit').modal('hide');
+                    
+                }else{
+                    alert(r.msg);
+                }
+            }).fail(function( jqXHR, textStatus ){
+                alert("系统错误。");
+            });
+        });
+        $("#add_reward").click(function(){
+            $("#reward_method").val("add");
+        });
+        
+        
+        $(".reward_edit_btn").click(function(){
+            var id = $(this).data('id');
+            $("#reward_method").val("edit");
+            $('#rewards_edit').modal('show');
+            $("#reward_id").val(id);
+            $("#reward_type").val($(".type",$(this).parents("tr")).text());
+            $("#reward_date").val($(".date",$(this).parents("tr")).text());
+            $("#reward_yuanyin").val($(".yuanyin",$(this).parents("tr")).text());
+            $("#reward_other").val($(".other",$(this).parents("tr")).text());
+            
+        });
+       
+        $(".reward_del_btn").click(function(){
+            var id = $(this).data("id");
+            var $this = $(this);
+            if (confirm("确认删除么")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/UpdateReward",
+                    data: {method:'delete',id:id},
+                    dataType:'json'
+                }).done(function(re){
+                    var r = $.extend({status:"error"},re);
+                    if(r.status == "ok"){
+                        $this.parents("tr").remove();
 
+                    }else{
+                        alert(r.msg);
+                    }
+                }).fail(function( jqXHR, textStatus ){
+                    alert("系统错误。");
+                });
+            }
+            
+            
+        });
+    });             
+</script>
 
+<!-- 工资 -->
+<div class="modal fade" id="wage_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">添加[<%=rs.getString("ename")%>]的工资信息</h4>
+      </div>
+      <div class="modal-body">
+          <form role="form">
+              <input name="eid" type="hidden" id="wage_e_id" value="<%=rs.getString("id")%>" />
+              <input name="m" type="hidden" id="wage_method" value="" />
+              <input name="id" type="hidden" id="wage_id" value="0" />
+              <div class="form-group">
+                <label for="wage_date">工资添加日期</label>
+                <input type="text" class="form-control" id="wage_date" placeholder="工资添加日期">
+              </div>
+              <div class="form-group">
+                <label for="wage_jiben">基本工资</label>
+                <input type="text" class="form-control" id="wage_jiben" placeholder="基本工资">
+              </div>
+              <div class="form-group">
+                <label for="wage_ticheng">提成所得</label>
+                <input type="text" class="form-control" id="wage_ticheng" placeholder="提成所得">
+              </div>
+              <div class="form-group">
+                <label for="wage_jiangli">奖励所得</label>
+                <input type="text" class="form-control" id="wage_jiangli" placeholder="奖励所得">
+              </div>
+              <div class="form-group">
+                <label for="wage_jiaban">加班所得</label>
+                <input type="text" class="form-control" id="wage_jiaban" placeholder="加班所得">
+              </div>
+              <div class="form-group">
+                <label for="wage_other">全勤奖励</label>
+                <input type="text" class="form-control" id="wage_other" placeholder="全勤奖励">
+              </div>
+              <div class="form-group">
+                <label for="wage_beizhu">其他</label>
+                <input type="text" class="form-control" id="wage_beizhu" placeholder="病假，事假，养老保险，过失扣罚">
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-default" id="wage_submit_btn">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+     $(function(){
+        $("#wage_submit_btn").click(function(){
+            
+            var dataset = {};
+            dataset.id    = $("#wage_id").val();
+            dataset.eid    = $("#wage_e_id").val();
+            dataset.method    = $("#wage_method").val();
+            dataset.date    = $("#wage_date").val();
+            dataset.jiben    = $("#wage_jiben").val();
+            dataset.ticheng    = $("#wage_ticheng").val();
+            dataset.jiangli    = $("#wage_jiangli").val();
+            dataset.jiaban    = $("#wage_jiaban").val();
+            dataset.other    = $("#wage_other").val();
+            dataset.beizhu    = $("#wage_beizhu").val();
+            
+            if (dataset.method === "") {
+                alert("操作错误");
+                return;
+            }
+            if (dataset.date == "" || dataset.jiben == "") {
+                alert("信息填写不正确");return;
+            }
+            $.ajax({
+                type: "GET",
+                url: "/UpdateWage",
+                data: dataset,
+                dataType:'json'
+            }).done(function(re){
+                var r = $.extend({status:"error"},re);
+                if(r.status == "ok"){
+                    $('#wage_edit').modal('hide');
+                    
+                }else{
+                    alert(r.msg);
+                }
+            }).fail(function( jqXHR, textStatus ){
+                alert("系统错误。");
+            });
+        });
+        $("#add_wage").click(function(){
+            $("#wage_method").val("add");
+        });
+        
+        
+        $(".wage_edit_btn").click(function(){
+            var id = $(this).data('id');
+            $("#wage_method").val("edit");
+            $('#wage_edit').modal('show');
+            $("#wage_id").val(id);
+            $("#reward_type").val($(".type",$(this).parents("tr")).text());
+            $("#wage_date").val($(".date",$(this).parents("tr")).text());
+            $("#wage_jiben").val($(".jiben",$(this).parents("tr")).text());
+            $("#wage_ticheng").val($(".ticheng",$(this).parents("tr")).text());
+            $("#wage_jiangli").val($(".jiangli",$(this).parents("tr")).text());
+            $("#wage_jiaban").val($(".jiaban",$(this).parents("tr")).text());
+            $("#wage_other").val($(".other",$(this).parents("tr")).text());
+            $("#wage_beizhu").val($(".beizhu",$(this).parents("tr")).text());
+            
+        });
+       
+        $(".wage_del_btn").click(function(){
+            var id = $(this).data("id");
+            var $this = $(this);
+            if (confirm("确认删除么")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/UpdateWage",
+                    data: {method:'delete',id:id},
+                    dataType:'json'
+                }).done(function(re){
+                    var r = $.extend({status:"error"},re);
+                    if(r.status == "ok"){
+                        $this.parents("tr").remove();
+
+                    }else{
+                        alert(r.msg);
+                    }
+                }).fail(function( jqXHR, textStatus ){
+                    alert("系统错误。");
+                });
+            }
+            
+            
+        });
+    });             
+</script>
 
 <%
     stmt.close();
