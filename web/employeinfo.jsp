@@ -24,6 +24,7 @@ try{
     ResultSet rs2 = null;
     ResultSet rs_jiangfa = null;
     ResultSet rs_wage = null;
+    ResultSet rs_attendance = null;
     if(rs.next()){
         ename = rs.getString("ename");
         //调动履历
@@ -34,6 +35,8 @@ try{
         rs_jiangfa = stmt.executeQuery("select * from rewards where employe_id="+rs.getString("id"));
         stmt = con.createStatement();
         rs_wage = stmt.executeQuery("select * from wages where  employe_id="+rs.getString("id"));
+        stmt = con.createStatement();
+        rs_attendance = stmt.executeQuery("select * from attendances where  employe_id="+rs.getString("id"));
     }else{
         
     }
@@ -202,16 +205,12 @@ try{
 	</div>
 	</div>
 	<div class="tab-pane fade" id="kaoqin">
-		<ul class="pagination">
-		<li class="disabled"><a href="#">Â«</a></li>
-		<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-		<li><a href="#">2</a></li>
-		<li><a href="#">3</a></li>
-		<li><a href="#">4</a></li>
-		<li><a href="#">5</a></li>
-		<li><a href="#">»</a></li>
-	     </ul>
-	    <div class="list">
+		
+	    <div class="panel panel-default" style="margin:15px 0px;">
+        <div class="panel-heading">
+            <a href="#" data-toggle="modal" data-target="#attendance_edit" id="add_attendance"><i class="glyphicon glyphicon-plus" /></a>
+            考勤信息
+        </div>
 		<table class="table table-striped table-bordered table-hover table-condensed">
 		    <thead>
 		      <tr>
@@ -225,15 +224,21 @@ try{
 		      </tr>
 		    </thead>
 		    <tbody>
-		      <tr>
-			    <td><a href="#"><i class="glyphicon glyphicon-trash"></i></a>&nbsp;&nbsp;<a href="#"><i class="glyphicon glyphicon-edit"></i></a></td>
-				<td>2014/04/01</td>
-				<td>10:00:00</td>
-				<td>18:00:00</td>
-				<td>8H</td>
-				<td>加班</td>
-				<td>普通</td>
-		      </tr>
+                <%while(rs_attendance.next()){%>
+                    <tr>
+                        <td>
+                            <a href="#" data-id="<%=rs_attendance.getString("id")%>" class="attendance_del_btn"><i class="glyphicon glyphicon-trash" /></a>&nbsp;&nbsp;
+                            <a href="#" data-id="<%=rs_attendance.getString("id")%>" class="attendance_edit_btn"><i class="glyphicon glyphicon-edit" /></a></td>
+                        <td class="date"><%=rs_attendance.getString("kdate")%></td>
+                        <td class="yingdao"><%=rs_attendance.getString("yingdao_t")%></td>
+                        <td class="shidao"><%=rs_attendance.getString("shidao_t")%></td>
+                        <td class="work"><%=rs_attendance.getString("work_h")%></td>
+                        <td class="status"><%=rs_attendance.getString("status")%></td>
+                        <td class="qufen"><%=rs_attendance.getString("qufen")%></td>
+                    </tr>	
+                <%}%>
+                
+		      
 		     
 		    </tbody>
 		  </table>
@@ -605,7 +610,137 @@ try{
         });
     });             
 </script>
+<!-- 考勤 -->
+<div class="modal fade" id="attendance_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">添加[<%=rs.getString("ename")%>]的考勤信息</h4>
+      </div>
+      <div class="modal-body">
+          <form role="form">
+              <input name="eid" type="hidden" id="attendance_e_id" value="<%=rs.getString("id")%>" />
+              <input name="m" type="hidden" id="attendance_method" value="" />
+              <input name="id" type="hidden" id="attendance_id" value="0" />
+              <div class="form-group">
+                <label for="attendance_date">出勤日期</label>
+                <input type="text" class="form-control" id="attendance_date" placeholder="2014/03/02">
+              </div>
+              <div class="form-group">
+                <label for="attendance_yingdao">应到时间</label>
+                <input type="text" class="form-control" id="attendance_yingdao" placeholder="10:00:00">
+              </div>
+              <div class="form-group">
+                <label for="attendance_shidao">实到时间</label>
+                <input type="text" class="form-control" id="attendance_shidao" placeholder="10:00:00">
+              </div>
+              <div class="form-group">
+                <label for="attendance_workh">工作时间</label>
+                <input type="text" class="form-control" id="attendance_workh" placeholder="8h">
+              </div>
+              <div class="form-group">
+                <label for="attendance_status">出勤状况</label>
+                <input type="text" class="form-control" id="attendance_status" placeholder="加班">
+              </div>
+              <div class="form-group">
+                <label for="attendance_qufen">出勤区分</label>
+                <input type="text" class="form-control" id="attendance_qufen" placeholder="普通">
+              </div>
+              
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-default" id="attendance_submit_btn">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+     $(function(){
+        $("#attendance_submit_btn").click(function(){
+            
+            var dataset = {};
+            dataset.id    = $("#attendance_id").val();
+            dataset.eid    = $("#attendance_e_id").val();
+            dataset.method    = $("#attendance_method").val();
+            dataset.date    = $("#attendance_date").val();
+            dataset.yingdao    = $("#attendance_yingdao").val();
+            dataset.shidao    = $("#attendance_shidao").val();
+            dataset.workh    = $("#attendance_workh").val();
+            dataset.status    = $("#attendance_status").val();
+            dataset.qufen    = $("#attendance_qufen").val();
+            
+            
+            if (dataset.method === "") {
+                alert("操作错误");
+                return;
+            }
+            
+            $.ajax({
+                type: "GET",
+                url: "/UpdateAttendance",
+                data: dataset,
+                dataType:'json'
+            }).done(function(re){
+                var r = $.extend({status:"error"},re);
+                if(r.status == "ok"){
+                    $('#attendance_edit').modal('hide');
+                    
+                }else{
+                    alert(r.msg);
+                }
+            }).fail(function( jqXHR, textStatus ){
+                alert("系统错误。");
+            });
+        });
+        $("#add_attendance").click(function(){
+            $("#attendance_method").val("add");
+        });
+        
+        
+        $(".attendance_edit_btn").click(function(){
+            var id = $(this).data('id');
+            $("#attendance_method").val("edit");
+            $('#attendance_edit').modal('show');
+            $("#attendance_id").val(id);
+            $("#attendance_date").val($(".date",$(this).parents("tr")).text());
+            $("#attendance_yingdao").val($(".yingdao",$(this).parents("tr")).text());
+            $("#attendance_shidao").val($(".shidao",$(this).parents("tr")).text());
+            $("#attendance_workh").val($(".work",$(this).parents("tr")).text());
+            $("#attendance_status").val($(".status",$(this).parents("tr")).text());
+            $("#attendance_qufen").val($(".qufen",$(this).parents("tr")).text());
+            
+            
+        });
+       
+        $(".attendance_del_btn").click(function(){
+            var id = $(this).data("id");
+            var $this = $(this);
+            if (confirm("确认删除么")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/UpdateAttendance",
+                    data: {method:'delete',id:id},
+                    dataType:'json'
+                }).done(function(re){
+                    var r = $.extend({status:"error"},re);
+                    if(r.status == "ok"){
+                        $this.parents("tr").remove();
 
+                    }else{
+                        alert(r.msg);
+                    }
+                }).fail(function( jqXHR, textStatus ){
+                    alert("系统错误。");
+                });
+            }
+            
+            
+        });
+    });             
+</script>
 <!-- 工资 -->
 <div class="modal fade" id="wage_edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
