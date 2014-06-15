@@ -48,13 +48,19 @@ public class Searchemploye extends HttpServlet {
                 Statement stmt = con.createStatement();
                 // ４．SQL ステートメントの発行
                 ResultSet rs;
+                String select = "";
                 if(ecode == null || ecode == ""){
-                    rs = stmt.executeQuery("select * from employe");
+                    //rs = stmt.executeQuery("select * from employe");
+                    select = "select e.*,d.dname from employe as e";
                 }else{
-                    rs = stmt.executeQuery("select * from employe where ecode='"+ecode+"'");
+                    //rs = stmt.executeQuery("select * from employe where ecode='"+ecode+"'");
+                    select = "select * from employe as e where ecode='"+ecode+"'";
                 }
                 
+                select += " Left Join department_employe as de On de.employe_id=e.id "
+                        + " Left join departments as d on de.department_id = d.id";
                 
+                rs = stmt.executeQuery(select);
                 // ５．結果の出力
                 
                 Map<String, Object> json = new HashMap<String, Object>();
@@ -73,7 +79,7 @@ public class Searchemploye extends HttpServlet {
                         rebody +="<td>女</td>";
                     }
                     
-                    rebody +="<td>"+rs.getString("bumen")+"</td>";
+                    rebody +="<td>"+rs.getString("dname")+"</td>";
                     rebody +="<td>"+rs.getString("workstart")+"</td>";
                     rebody +="<td>"+rs.getString("zhiwu")+"</td>";
                     rebody +="<td>"+rs.getString("status")+"</td>";

@@ -13,6 +13,7 @@
 
     <!-- Bootstrap -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/datepicker.css" rel="stylesheet">
     <link href="/css/main.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -21,6 +22,17 @@
       <script src="/js/html5shiv.js"></script>
       <script src="/js/respond.min.js"></script>
     <![endif]-->
+    <script>
+        var localloaded = "";
+        function update_page(){
+            setTimeout(function(){
+               if (localloaded != "") {
+                var dd = new Date();
+                $("#page-wrapper").load(localloaded+"?"+dd.getSeconds());
+                } 
+            },1500);
+        }
+    </script>
   </head>
   <body>
     <div id="wrapper">
@@ -103,6 +115,7 @@
     <script src="js/jquery-2.1.0.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/jquery.metisMenu.js"></script>
     <script>
 	$(function () {
@@ -116,6 +129,7 @@
         $("body").on('click',"a[data-role='loader']",function(){
             var target = $(this).data("target");
             if(target){
+                localloaded = target;
                 var dd = new Date();
                 $("#page-wrapper").load(target+"?"+dd.getSeconds());
             }

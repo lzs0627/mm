@@ -85,7 +85,7 @@ try{
 			</tr>
 			<tr>
 			    <th class="col-lg-2">出生年月</th>
-			    <td><input type="text" class="form-control" value="<%=rs.getString("birthday")%>" id="birthday"></td>
+			    <td><input type="text" class="form-control dateadd" value="<%=rs.getString("birthday")%>" id="birthday"></td>
 			    <th class="col-lg-2">文化成都</th>
 			    <td><input type="text" class="form-control" value="<%=rs.getString("wenhua")%>" id="wenhua"></td>
 			</tr>
@@ -103,17 +103,19 @@ try{
 			    <td>
 				<input type="text" class="form-control" value="<%=rs.getString("jiguan")%>" id="jiguan"></td>
 			</tr>
-			<tr>
+			<tr><!--
 			    <th class="col-lg-2">所属部门</th>
 			    <td><input type="text" class="form-control" value="<%=rs.getString("bumen")%>" id="bumen"></td>
+                -->
 			    <th class="col-lg-2">联系电话</th>
 			    <td><input type="text" class="form-control" value="<%=rs.getString("tell")%>" id="tell"></td>
+                <td colspan="2"></td>
 			</tr>
 			<tr>
 			    <th class="col-lg-2">到岗日期</th>
-			    <td><input type="text" class="form-control" value="<%=rs.getString("workstart")%>" id="workstart"></td>
+			    <td><input type="text" class="form-control dateadd" value="<%=rs.getString("workstart")%>" id="workstart"></td>
 			    <th class="col-lg-2">离岗日期</th>
-			    <td><input type="text" class="form-control" value="<%=rs.getString("workleave")%>" id="workleave"></td>
+			    <td><input type="text" class="form-control dateadd" value="<%=rs.getString("workleave")%>" id="workleave"></td>
 			</tr>
 			<tr>
 			    <th class="col-lg-2">职务</th>
@@ -353,7 +355,7 @@ try{
               </div>
               <div class="form-group">
                 <label for="h_changeat">调动日期</label>
-                <input type="text" class="form-control" id="h_changeat" placeholder="调动日期">
+                <input type="text" class="form-control dateadd" id="h_changeat" placeholder="调动日期">
               </div>
               <div class="form-group">
                 <label for="e_yuanyin">调动原因</label>
@@ -370,6 +372,7 @@ try{
 </div>
 <script>
     $(function(){
+        
         $("#submit_btn_e").click(function(){
             
             var dataset = {};
@@ -408,6 +411,7 @@ try{
                 var r = $.extend({status:"error"},re);
                 if(r.status == "ok"){
                     alert("更新成功");
+                    update_page();
                 }else{
                     alert("更新失败");
                 }
@@ -443,7 +447,7 @@ try{
                 var r = $.extend({status:"error"},re);
                 if(r.status == "ok"){
                     $('#history_edit').modal('hide');
-                    
+                    update_page();
                 }else{
                     alert(r.msg);
                 }
@@ -478,7 +482,7 @@ try{
                     var r = $.extend({status:"error"},re);
                     if(r.status == "ok"){
                         $this.parents("tr").remove();
-
+                        
                     }else{
                         alert(r.msg);
                     }
@@ -507,11 +511,11 @@ try{
               <input name="id" type="hidden" id="reward_id" value="0" />
               <div class="form-group">
                 <label for="reward_type">奖罚类型</label>
-                <input type="text" class="form-control" id="reward_type" placeholder="奖励or惩罚">
+                <input type="text" class="form-control dateadd" id="reward_type" placeholder="奖励or惩罚">
               </div>
               <div class="form-group">
                 <label for="reward_date">奖惩时间</label>
-                <input type="text" class="form-control" id="reward_date" placeholder="奖惩时间">
+                <input type="text" class="form-control dateadd" id="reward_date" placeholder="奖惩时间">
               </div>
               <div class="form-group">
                 <label for="reward_yuanyin">奖惩原因</label>
@@ -559,7 +563,7 @@ try{
                 var r = $.extend({status:"error"},re);
                 if(r.status == "ok"){
                     $('#reward_edit').modal('hide');
-                    
+                    update_page();
                 }else{
                     alert(r.msg);
                 }
@@ -625,15 +629,15 @@ try{
               <input name="id" type="hidden" id="attendance_id" value="0" />
               <div class="form-group">
                 <label for="attendance_date">出勤日期</label>
-                <input type="text" class="form-control" id="attendance_date" placeholder="2014/03/02">
+                <input type="text" class="form-control dateadd" id="attendance_date" placeholder="2014/03/02">
               </div>
               <div class="form-group">
                 <label for="attendance_yingdao">应到时间</label>
-                <input type="text" class="form-control" id="attendance_yingdao" placeholder="10:00:00">
+                <input type="text" class="form-control dateadd" id="attendance_yingdao" placeholder="10:00:00">
               </div>
               <div class="form-group">
                 <label for="attendance_shidao">实到时间</label>
-                <input type="text" class="form-control" id="attendance_shidao" placeholder="10:00:00">
+                <input type="text" class="form-control dateadd" id="attendance_shidao" placeholder="10:00:00">
               </div>
               <div class="form-group">
                 <label for="attendance_workh">工作时间</label>
@@ -687,7 +691,7 @@ try{
                 var r = $.extend({status:"error"},re);
                 if(r.status == "ok"){
                     $('#attendance_edit').modal('hide');
-                    
+                    update_page();
                 }else{
                     alert(r.msg);
                 }
@@ -756,7 +760,7 @@ try{
               <input name="id" type="hidden" id="wage_id" value="0" />
               <div class="form-group">
                 <label for="wage_date">工资添加日期</label>
-                <input type="text" class="form-control" id="wage_date" placeholder="工资添加日期">
+                <input type="text" class="form-control dateadd" id="wage_date" placeholder="工资添加日期">
               </div>
               <div class="form-group">
                 <label for="wage_jiben">基本工资</label>
@@ -823,7 +827,7 @@ try{
                 var r = $.extend({status:"error"},re);
                 if(r.status == "ok"){
                     $('#wage_edit').modal('hide');
-                    
+                    update_page();
                 }else{
                     alert(r.msg);
                 }
@@ -876,6 +880,8 @@ try{
             
             
         });
+        
+        $(".dateadd").datepicker({format:'yyyy/mm/dd'});
     });             
 </script>
 

@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -59,7 +60,7 @@ public class addemploye extends HttpServlet {
         String bankname    = request.getParameter("bankname");
         String bankno    = request.getParameter("bankno");
         String desc    = request.getParameter("desc");
-        
+        Map<String, Object> json = new HashMap<String, Object>();
         try{
             // １．JDBC Driver の登録
             Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -69,7 +70,7 @@ public class addemploye extends HttpServlet {
             PreparedStatement stmt = con.prepareStatement(
                     "insert into employe"
                             + "(ecode,ename,uid,sex,ethnic,birthday,wenhua,hunyin,jiguan,bumen,tell,workstart,workleave,zhiwu,status,bankname,bankno,description,modified,created) "
-                            + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                            + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             // ４．SQL ステートメントの発行
             
             stmt.setString(1, ecode);
@@ -92,18 +93,41 @@ public class addemploye extends HttpServlet {
             stmt.setString(18,desc);
             stmt.setString(19,"2014/12/12");
             stmt.setString(20,"2014/12/12");
-            stmt.execute();
+            int affectedRows = stmt.executeUpdate();
             
-            Map<String, Object> json = new HashMap<String, Object>();
-            json.put("status","ok");
+            if (affectedRows == 0){
+                json.put("status","error");
+                json.put("msg","insert failed.");
+            } else {
+                ResultSet generatedKeys = null;
+                generatedKeys = stmt.getGeneratedKeys();
+                int eid = 0;
+                if (generatedKeys.next()) {
+                    eid = generatedKeys.getInt(1);
+                } else {
+                    throw new Exception("Creating user failed, no generated key obtained.");
+                }
+                PreparedStatement stmt2 = con.prepareStatement(
+                    "insert into department_employe"
+                            + "(employe_id,department_id) "
+                            + "values(?,?)");
             
-            response.getOutputStream().write(JSON.encode(json).getBytes("UTF-8"));
+                stmt2.setInt(1, eid);
+                stmt2.setInt(2, Integer.parseInt(bumen));
+                stmt2.execute();
+                
+
+                json.put("status","ok");
+            }
+            
+            
+            
             
         } catch (Exception e2) {
-			System.out.println(
-				"Exception: " + e2.getMessage());
+			json.put("status","error");
+                json.put("msg",e2.getMessage());
 		}
-        
+        response.getOutputStream().write(JSON.encode(json).getBytes("UTF-8"));
         
     }
 
