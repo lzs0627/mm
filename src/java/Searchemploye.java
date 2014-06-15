@@ -81,7 +81,7 @@ public class Searchemploye extends HttpServlet {
                     
                     rebody +="<td>"+rs.getString("dname")+"</td>";
                     rebody +="<td>"+rs.getString("workstart")+"</td>";
-                    rebody +="<td>"+rs.getString("zhiwu")+"</td>";
+                    //rebody +="<td>"+rs.getString("zhiwu")+"</td>";
                     rebody +="<td>"+rs.getString("status")+"</td>";
                     rebody +="</tr>";
                     count ++;
